@@ -1,9 +1,10 @@
 package com.example.cis183_multipleintents;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Pet
+public class Pet implements Serializable
 {
     //a pet is comprised of the following information
     //name, age and type
@@ -60,6 +61,7 @@ public class Pet
 
     static class PetType
     {
+        String test;
         static ArrayList<String> typeOfPet = new ArrayList<>(Arrays.asList("Dog","Cat","Snake","Chicken","Hamster"));
 
         public static String petAt(int i)
