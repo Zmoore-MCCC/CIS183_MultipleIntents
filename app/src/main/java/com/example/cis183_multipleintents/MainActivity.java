@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
@@ -17,7 +18,9 @@ import androidx.core.view.WindowInsetsCompat;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<Pet> listOfPets;
+    static private ArrayList<Pet> listOfPets;
+    static int numberTestingLoad = 50;
+    static boolean firstLoad = true;
 
     //This is going to be used for testing purposes only
     //Just to show on listview interact well with arrays
@@ -26,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     PetListAdapter plAdapter;
 
     Intent intent_j_displayUpdate;
+
+    Button btn_j_addPet;
+    Intent intent_j_addNewPet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,38 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        Intent cameFrom = getIntent();
+
+        if(cameFrom.getSerializableExtra("PetData") != null)
+        {
+            Pet petData = (Pet) cameFrom.getSerializableExtra("PetData");
+            listOfPets.add(petData);
+        }
+
+        if(firstLoad)
+        {
+            //I need a list to house all pets for the vet clinic
+            listOfPets = new ArrayList<>();
+            //make a new pet using the default constructor
+            Pet pet = new Pet();
+            pet.setName("Tito");
+            pet.setAge(12);
+            pet.setType("Dog");
+
+            //add the new pet to our list
+            listOfPets.add(pet);
+            //make a new pet using the overloaded constructor
+            Pet anotherpet = new Pet("Willow", 5, "Dog");
+            //add the new pet to our list
+            listOfPets.add(anotherpet);
+
+            addDummyDataToArrayList();
+
+            firstLoad = false;
+
+        }
+
+
         //GUI Connection
         lv_j_listOfPets = findViewById(R.id.lv_v_listOfPets);
 
@@ -49,30 +87,22 @@ public class MainActivity extends AppCompatActivity {
 
         //lv_j_listOfPets.setAdapter(adapter);
 
-        //I need a list to house all pets for the vet clinic
-        listOfPets = new ArrayList<>();
-        //make a new pet using the default constructor
-        Pet pet = new Pet();
-        pet.setName("Tito");
-        pet.setAge(12);
-        pet.setType("Dog");
 
 
-        //add the new pet to our list
-        listOfPets.add(pet);
-        //make a new pet using the overloaded constructor
-        Pet anotherpet = new Pet("Willow", 5, "Dog");
-        //add the new pet to our list
-        listOfPets.add(anotherpet);
+
+
 
         //get an instance of PetDisplayUpdate
         intent_j_displayUpdate = new Intent(MainActivity.this, PetDisplayUpdate.class);
+        intent_j_addNewPet = new Intent(MainActivity.this, AddPet.class);
+        btn_j_addPet = findViewById(R.id.btn_v_addPet);
 
-        addDummyDataToArrayList();
+
         displayAllPetData();
         fillListView();
         setOnClickListenerForListView();
-        Log.d("Pet Dat:",pet.getName() + " is a " + pet.getType() + " and is " + pet.getAge() + " years old");
+        addPetButtonClickListener();
+
     }
 
     private void addDummyDataToArrayList()
@@ -120,5 +150,29 @@ public class MainActivity extends AppCompatActivity {
     {
         intent_j_displayUpdate.putExtra("PetData", pet);
         startActivity(intent_j_displayUpdate);
+    }
+
+    private void addPetButtonClickListener()
+    {
+        btn_j_addPet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                numberTestingLoad = 99;
+                Log.d("Value after Change", numberTestingLoad + "");
+                Log.d("Value after Change", numberTestingLoad + "");
+                //if we want to pass the intent data
+                //we need to make a bundle
+                //first param: name of "variable"
+                //second param: the data to pass to this intent
+                intent_j_addNewPet.putExtra("InfoPassed","Hello from main");
+                startActivity(intent_j_addNewPet);
+            }
+        });
+    }
+
+    public void addPet(Pet p)
+    {
+        listOfPets.add(p);
     }
 }
