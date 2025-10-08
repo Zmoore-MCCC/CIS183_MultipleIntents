@@ -74,7 +74,7 @@ public class Pet implements Serializable
             return typeOfPet;
         }
 
-        public static void addPet(String t)
+        public static void addPetType(String t)
         {
             typeOfPet.add(t);
         }
